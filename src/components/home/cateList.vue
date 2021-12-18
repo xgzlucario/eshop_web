@@ -35,7 +35,7 @@
     <div class="seckill-text">
       <span class="seckill-title">{{ cateName }} 分类排行</span>
       &ensp;
-      <span class="seckill-remarks"分类的热门书籍~</span>
+      <span class="seckill-remarks">分类的热门书籍~</span>
     </div>
   </el-row>
 
