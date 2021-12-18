@@ -1,54 +1,75 @@
 <template>
-  <div style="width: 70%; margin-left: 15%; margin-top: 5%">
-    <el-row>
-      <el-tag>选择书本类别</el-tag>
-      <el-select v-model="value" placeholder="选择分类" size="small">
-        <el-option @click="cateID=i.id" v-for="i in options" :key="i.id" :label="i.name" :value="i.id" />
-      </el-select>
-      &emsp;
-      <el-check-tag :checked="hot===1" @click="hot=1">评分降序</el-check-tag>
-      <el-check-tag :checked="hot===-1" @click="hot=-1">评分升序</el-check-tag>
-    </el-row>
-
-    <el-table :data="data" stripe>
-      <el-table-column label="书本信息">
-        <el-table-column prop="bookName" label="书名" width="350" />
-        <el-table-column prop="author" label="作者" width="200" />
-        <el-table-column prop="cate" label="分类" width="160" />
-      </el-table-column>
-
-      <el-table-column label="热度">
-        <el-table-column prop="star" label="评分" width="100">
-          <template #default="scope">
-            {{ scope.row.star }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="sell" label="已售" width="100" />
-      </el-table-column>
-
-      <el-table-column label="操作">
-        <template #default="scope">
-          <el-button @click="goto(scope.row.id)" size="small" type="primary" plain>查看详情</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <el-pagination
-        layout="prev, pager, next"
-        @current-change="pageChange"
-        :total="counts" />
+  <div class="seckill-text">
+    <span class="seckill-title">书籍榜单</span>&ensp;
+    <span class="seckill-remarks">包含本站所有书籍~</span>
   </div>
+
+  <n-data-table
+      remote
+      :columns="columns"
+      :data="data"
+      @update:sorter="sorterChange"
+      @update:filters="filtersChange"
+  />
+
+  <n-pagination
+      @update-page="pageChange"
+      style="float: right; margin-top: 5px"
+      v-model:page="page"
+      :page-count="counts / 10"
+  />
 </template>
 
 <script>
+import { h } from 'vue'
+import { NButton } from 'naive-ui'
+
 export default {
   data() {
     return {
-      options: [{name: '不选择', id:''}],
-      value: '',
-      hot: 1,
+      columns: [
+        {
+          title: '书本名称',
+          key: 'bookName',
+          render: (row) => {
+            return h(
+                NButton,
+                {
+                  quaternary: true,
+                  text: true,
+                  type: 'info',
+                  onClick: () => {
+                    this.$router.push({path: '/items/' + row.id})
+                  }
+                },
+                {
+                  default: () => row.bookName,
+                })
+          }
+        },
+        {title: '作者', key: 'author'},
+        {
+          title: '分类',
+          key: 'cate',
+          filterOptions: [],
+          filter () {
+            return true
+          },
+          render (row) {
+            return row.cate === 'uncategorized' ? '--' : row.cate
+          }
+        },
+        {
+          title: '评分', key: 'star', sorter: 'default',
+          render: (row) => {
+            return row.star / 2
+          }
+        },
+        {title: '已售', key: 'sell'},
+      ],
       counts: 0,
-      page: 1,
+      page: 0,
+      hot: 1,
       data: [],
       cateID: '',
     }
@@ -57,53 +78,76 @@ export default {
     this.getCategory()
     this.getBooks()
   },
-  watch:{
-    hot(){
+  methods: {
+    filtersChange(i) {
+      this.cateID = i.cate[0]
       this.getBooks()
     },
-    cateID(){
+    sorterChange(i) {
+      if (i.order === 'ascend') this.hot = -1
+      else if (i.order === 'descend') this.hot = 1
+      else this.hot = ''
       this.getBooks()
-    }
-  },
-  methods:{
-    getStar(s){
-      return s/2
     },
-    getCategory(){
+    getCategory() {
       this.$store.state.axios({
         url: '/go/categories/',
         method: 'get'
       }).then(r => {
+        // 分类集合
+        let cateSet = {}
         r.data.data.forEach(i => {
-          this.options.push({name: i.name, id: i.id})
+          cateSet[i.name] = i.id
         })
+
+        for (let k in cateSet)
+          this.columns[2].filterOptions.push({label: k, value: cateSet[k]})
       })
     },
-    getBooks(i){
+    getBooks(page) {
       this.$store.state.axios({
         url: '/go/book/',
         method: 'get',
         params: {
           category: this.cateID,
           hot: this.hot,
-          page: i ? (i.page ? i.page : 1) : 1
+          page: page ? page : 1
         },
       }).then(r => {
         this.counts = r.data['all books count']
-        this.data = []
-        r.data.data.forEach(i => {
-          this.data.push({
-            id:i.ID, bookName: i.Name, author: i.Author, cate: i.Category, sell: i.PayNumber, star: i.Star,
-          })
+        this.saveData(r.data.data)
+      })
+    },
+    // 更新数据
+    saveData(data) {
+      this.data = []
+      data.forEach(i => {
+        this.data.push({
+          id: i.ID, bookName: i.Name, author: i.Author, cate: i.Category, sell: i.PayNumber, star: i.Star,
         })
       })
     },
-    pageChange(i){
-      this.getBooks({page: i})
-    },
-    goto(id){
-      this.$router.push({path:'/items/' + id})
+    pageChange(i) {
+      this.getBooks(i)
     }
   }
 }
 </script>
+
+<style>
+.seckill-text {
+  width: 300px;
+  height: 100%;
+  float: left;
+}
+.seckill-text .seckill-title {
+  font-size: 22px;
+  line-height: 50px;
+  color: #000;
+}
+.seckill-text .seckill-remarks {
+  margin-left: 5px;
+  font-size: 10px;
+  color: #000;
+}
+</style>

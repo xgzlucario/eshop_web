@@ -5,4 +5,6 @@ import store from './store'
 import ElementPlus from 'element-plus';
 import 'element-plus/lib/theme-chalk/index.css';
 
-createApp(App).use(store).use(ElementPlus).use(router).mount('#app')
+import NaiveUi from 'naive-ui'
+
+createApp(App).use(store).use(ElementPlus).use(router).use(NaiveUi).mount('#app')

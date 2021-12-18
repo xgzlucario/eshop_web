@@ -5,42 +5,33 @@
       <tab-bar />
     </el-header>
 
-    <el-main style="background-color: #F5F5F5">
-      <el-row>
-        <el-col :span="16" :push="4">
-          <carousel />
-        </el-col>
-      </el-row>
-
-      <el-row :gutter="20">
-        <el-col :span="8">
-        </el-col>
-
-
-        <el-col :span="8">
-          <user-card />
-        </el-col>
-      </el-row>
-
-      <book-list />
+    <el-main style="background-color: rgba(245,245,245)">
+      <div style="width: 70%; margin-left: 15%">
+        <cateList />
+        <br>
+        <book-list />
+      </div>
     </el-main>
-
   </el-container>
 </template>
 
 <script>
-import tabBar from "@/components/common/tabBar";
-import carousel from "@/components/home/carousel";
-import userCard from "@/components/home/userCard";
-import bookList from "@/components/home/bookList";
+import tabBar from "../common/tabBar";
+import cateList from "./cateList";
+import bookList from "./bookList";
 export default {
   components: {
-    tabBar, carousel, userCard, bookList
-  },
-  data() {
-    return {
-    }
+    tabBar, bookList, cateList
   }
 };
 </script>
+
+<style>
+.carousel-img {
+  width: 100%;
+  border-radius: 10px;
+  height: 350px;
+  object-fit: cover;
+}
+</style>
 
