@@ -4,7 +4,7 @@
   <div style="width: 60%; margin-left: 20%; margin-top: 1%">
     <el-row>
       <div class="seckill-text">
-        <span class="seckill-title">个人信息</span>
+        <span class="seckill-title"><i class="el-icon-s-custom"/> 个人信息</span>
         &ensp;
         <span class="seckill-remarks">你想知道的都在这里~</span>
       </div>
@@ -13,7 +13,6 @@
     <el-descriptions style="margin-top: 1%" class="margin-top" :column="1">
       <el-descriptions-item>
         <template #label>
-          <i class="el-icon-s-custom"></i>
           用户名
         </template>
         {{ info.Username }}
@@ -53,7 +52,7 @@
 
     <el-row>
       <div class="seckill-text">
-        <span class="seckill-title">购物车</span>
+        <span class="seckill-title"><i class="el-icon-shopping-cart-2"/> 购物车</span>
         &ensp;
         <span class="seckill-remarks">你想要的都在这里~</span>
       </div>
@@ -61,15 +60,14 @@
     <el-card shadow="never" v-for="(item,index) in carts" :key="item">
       <el-row>
         <el-col :span="4">
-          <img :src="bookPic(index)" alt="bookPic" style="width: 150px; height: 150px">
+          <img :src="bookPic(index)" style="width: 140px; height: 140px">
         </el-col>
         <el-col :span="18" :push="1">
-          <span style="font-weight: bold">名称：</span>
           <n-button @click="$router.push({path: '/items/' + item.id})" text type="info">{{ item.name }}</n-button><br>
           <span style="font-weight: bold">作者：</span>
           {{ item.author }}<br>
           <span style="font-weight: bold">价格：</span>
-          {{ item.price.toFixed(2) }}<br>
+          ￥{{ item.price.toFixed(2) }}<br>
 
           <!--其他按钮操作-->
           <br>
@@ -82,7 +80,7 @@
 
     <el-row>
       <div class="seckill-text">
-        <span class="seckill-title">已购书籍</span>
+        <span class="seckill-title"><i class="el-icon-collection"/> 已购书籍</span>
         &ensp;
         <span class="seckill-remarks">要经常阅读哦~</span>
       </div>
@@ -90,10 +88,9 @@
     <el-card shadow="never" v-for="(item,index) in haves" :key="item">
       <el-row>
         <el-col :span="4">
-          <img :src="bookPic(index)" alt="bookPic" style="width: 180px; height: 180px;">
+          <img :src="bookPic(index)" style="width: 140px; height: 140px">
         </el-col>
         <el-col :span="18" :push="1">
-          <span style="font-weight: bold">名称：</span>
           <n-button @click="$router.push({path: '/items/' + item.id})" text type="info">{{ item.name }}</n-button><br>
           <span style="font-weight: bold">作者：</span>
           {{ item.author }}<br>
@@ -111,9 +108,9 @@
 
     <el-row>
       <div class="seckill-text">
-        <span class="seckill-title">我的评论</span>
+        <span class="seckill-title"><i class="el-icon-chat-line-round"/> 我的评论</span>
         &ensp;
-        <span class="seckill-remarks">你想知道的都在这里~</span>
+        <span class="seckill-remarks">你说过的都在这里~</span>
       </div>
     </el-row>
     <el-card shadow="never" class="item" v-for="(item,index) in comments" :key="item">
@@ -468,8 +465,6 @@ export default {
             })
             this.resetForm('ruleForm3')
           })
-        } else {
-          return false
         }
       })
     }

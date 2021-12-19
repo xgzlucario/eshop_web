@@ -1,121 +1,67 @@
 <template>
   <tabBar/>
 
-  <div style="padding: 5%">
+  <div style="padding: 4%">
     <el-row>
-      <el-col :span="5" :offset="3">
-        <!--书本图片详情，可以点击查看大图，大图是一个列表-->
-        <div class="demo-image__preview">
-          <el-image
-              style="width: 300px; height: 280px"
-              :src="picUrl"
-              :preview-src-list="bigPicUrl">
-          </el-image>
-          <p class="a">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;点击可查看大图</p>
-        </div>
-      </el-col>
-      <el-col :span="12" :offset="1">
-        <!--这里是书本属性详情页面-->
-        <el-descriptions class="margin-top" title="商品详情" :column="2" border>
-          <el-descriptions-item>
-            <template #label>
-              <i class="el-icon-s-management"></i>
-              书本名称
-            </template>
-            {{ info.name }}
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template #label>
-              <i class="el-icon-s-custom"></i>
-              书本作者
-            </template>
-            {{ info.Author }}
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template #label>
-              <i class="el-icon-shopping-cart-2"></i>
-              书本售价
-            </template>
-            ￥{{ Number(info.Price).toFixed(2) }}
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template #label>
-              <i class="el-icon-tickets"></i>
-              购买人数
-            </template>
-            {{ info.PayNumber }}
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template #label>
-              <i class="el-icon-office-building"></i>
-              评分
-            </template>
-            <el-rate
-                v-model="getStar"
-                disabled
-                show-score
-                text-color="#ff9900"/>
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template #label>
-              <i class="el-icon-tickets"></i>
-              分类
-            </template>
-            {{ info.Category }}
-          </el-descriptions-item>
-        </el-descriptions>
-        <br><br><br>
-        <!--操作按钮-->
+      <!--图片+详情+评论区-->
+      <el-col :span="14" :offset="3">
         <el-row>
-          <el-col :span="6" v-if="!have">
-            <el-button type="primary" plain @click="addTrolley" v-if="!inCart">加入购物车</el-button>
-            <el-button type="danger" plain @click="removeTrolley" v-else>移除购物车</el-button>
+          <!--书本图片-->
+          <el-col :span="10">
+            <img :src="bookPic(123)" style="width: 250px; height: 300px">
           </el-col>
-          <el-col :span="6">
-            <el-button type="warning" plain @click="buy" v-if="!have">购买书本</el-button>
-            <el-button type="success" plain @click="read" v-else>阅读书本</el-button>
-          </el-col>
-          <el-col :span="6">
-            <el-button type="danger" plain @click="removeBook" v-show="isAdmin">删除</el-button>
+
+          <!--书本详情-->
+          <el-col :span="12">
+            <div style="font-weight: 500; font-size: 26px">{{ info.name }}</div>
+            <div style="color: gray; margin-top: 1%; line-height: 30px">
+              作者：{{ info.Author }}<br>
+              分类：{{ info.Category }}<br>
+              已售：{{ info.PayNumber }}本<br>
+            </div>
+
+            <!--评分-->
+            <el-rate style="margin-top: 1%" v-model="getStar" disabled show-score text-color="#ff9900"/>
+
+            <div style="color: gray; margin-top: 2%">
+              售价：<span style="font-size: 22px; color: #ea0505">￥{{ Number(info.Price).toFixed(2) }}</span>
+            </div>
+
+            <!--操作按钮-->
+            <el-row style="margin-top: 5%">
+              <el-col :span="6" v-if="!have">
+                <el-button type="primary" @click="addTrolley" v-if="!inCart">加入购物车</el-button>
+                <el-button type="danger" plain @click="removeTrolley" v-else>移出购物车</el-button>
+              </el-col>
+              <el-col :span="6">
+                <el-button type="warning" @click="buy" v-if="!have">购买</el-button>
+                <el-button type="success" @click="read" v-else>已有书本，开始阅读</el-button>
+              </el-col>
+              <el-col :span="6">
+                <el-button type="danger" @click="removeBook" v-show="isAdmin">删除</el-button>
+              </el-col>
+            </el-row>
           </el-col>
         </el-row>
-      </el-col>
-    </el-row>
-    <!--这里是read按钮应该弹出的试读内容-->
-    <el-row v-show="showText">
-      <el-col :span="16" :push="4">
-        <br>
-        <el-card class="b">
-          <h4 align="center">阅读书本</h4>
-          <p align="left" class="c">
-            {{ bookContent }}
-          </p>
-        </el-card>
-      </el-col>
-    </el-row>
-    <br><br><br>
-    <!--左边评论区，右边排行榜-->
-    <el-row :gutter="100">
-      <el-col :span="12" :push="4">
-        <h4 align="center">评论区</h4>
-      </el-col>
-      <el-col :span="5" :push="4">
-        <h4 align="center">排行榜</h4>
-      </el-col>
-    </el-row>
-    <el-row :gutter="100">
-      <el-col :span="12" :push="4">
+
+        <el-divider style="margin-top: 10%"/>
+
         <!--评论区-->
-        <el-card shadow="hover" class="item" v-for="(comment,index) in comments" :key="comment" align="left">
+        <el-row>
+          <div class="seckill-text">
+          <span class="seckill-title">
+            <i class="el-icon-document"/> 评论区
+          </span>
+          </div>
+        </el-row>
+
+        <!--评论区-->
+        <el-card style="margin-top: 3%" shadow="never" v-for="(comment,index) in comments" :key="comment">
           <el-row>
-            <el-col :span="1">
-              <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-                         size="small"></el-avatar>
+            <el-col :span="4">
+              <span>{{ comment.UserID }}</span>
             </el-col>
-            <el-col :span="4" style="margin-top: 6px">
-              <h4 style="margin-top: 2px">{{ comment.UserID }}</h4>
-            </el-col>
-            <el-col :span="8" style="margin-top: 6px">
+            <el-col :span="8">
               <el-rate
                   v-model="comment.Star"
                   disabled
@@ -124,68 +70,83 @@
               </el-rate>
             </el-col>
           </el-row>
-          <p class="c">{{ comment.Content }}</p>
-          <div align="right">
-            <el-button size="mini" type="danger" plain @click="deleteComments(index)"
-                       v-if="isAdmin || isMine(comment.UserID)">删除
-            </el-button>
-          </div>
+          <span>{{ comment.Content }}</span>
+          <el-button type="danger" plain @click="deleteComments(index)" v-if="isAdmin || isMine(comment.UserID)">
+            删除该评论
+          </el-button>
         </el-card>
+
+        <el-divider v-if="have" style="margin-top: 5%"/>
 
         <!--评论输入框-->
-        <br>
+        <div v-if="have" style="margin-top: 3%">
+          <div class="seckill-text">
+          <span class="seckill-title">
+            <i class="el-icon-chat-line-round"/> 我要发言
+          </span>
+            &ensp;
+            <span class="seckill-remarks"> 请友好发言哦~</span>
+          </div>
+        </div>
+
+        <div v-if="have" style="margin-top: 1%">
+          <el-input
+              size="large"
+              type="textarea"
+              placeholder="请输入内容"
+              v-model="textarea"
+              maxlength="100"
+              show-word-limit
+              id="comment"/>
+
+          <el-rate v-model="value_choose" style="margin-top: 1%"/>
+
+          <el-button style="margin-top: 1%" type="primary" round @click="submit">提交</el-button>
+        </div>
+      </el-col>
+
+      <!--排行榜-->
+      <el-col :span="7">
+        &emsp;<span style="font-size: 16px">同分类排行</span>
         <el-row>
-          <el-col :span="20">
-            <el-rate v-model="value_choose" align="left" id="rate"></el-rate>
-            <el-input
-                type="textarea"
-                placeholder="请输入内容"
-                v-model="textarea"
-                maxlength="100"
-                show-word-limit
-                id="comment"
-            >
-            </el-input>
-          </el-col>
-          <el-col :span="4">
-            <br>
-            <el-button :disabled="!have" type="primary" round @click="submit">
-              {{ have ? '提交' : '请先购买' }}
-            </el-button>
+          <el-col v-for="(i, index) in Rankings" :key="i.name" :span="10" :offset="1">
+            <div style="padding: 3%">
+              <div style="font-weight: 500; font-size: 16px">
+                <n-button text type="info"
+                          @click="this.$router.push({path: '/items/' + i.ID})">
+                  <span style="font-size: 15px">{{ i.Name.length > 16 ? i.Name.slice(0, 16) + '..' : i.Name }}</span>
+                </n-button>
+              </div>
+              <div style="color: gray; font-size: 14px">{{ i.Author }}</div>
+              <img :src="bookPic(index)" style="width: 100px; height: 100px">
+              <div style="font-size: 14px; line-height: 24px">售出: {{ i.PayNumber }}</div>
+              <n-rate size="small" readonly :default-value="i.Star / 2"/>
+            </div>
           </el-col>
         </el-row>
-
-      </el-col>
-      <el-col :span="7" :push="3">
-        <!--排行榜-->
-        <el-card>
-          <div v-for="(item,index) in Rankings" :key="item">
-            <el-row>
-              <el-col class="num-box" :span="4">
-                <span class="num">{{ index + 1 }}</span>
-              </el-col>
-              <el-col class="name-box" :span="16">
-                <div align="left">
-                  <el-button type="text" @click="clickRank(item.ID)">{{ item.Name }}</el-button>
-                </div>
-              </el-col>
-              <el-col :span="4">
-                <i class="score">{{ item.Star / 2 }}</i>
-              </el-col>
-            </el-row>
-            <br>
-          </div>
-        </el-card>
       </el-col>
     </el-row>
-    <br>
+
+    <div style="width: 76%; margin-left: 12%; margin-top: 5%" v-if="showText">
+      <el-row>
+        <div class="seckill-text">
+          <span class="seckill-title">
+            <i class="el-icon-document"/> 书本内容
+          </span>
+        </div>
+      </el-row>
+
+      {{ bookContent }}
+    </div>
   </div>
+  <div style="height: 150px"/>
 </template>
 
 <script>
 import tabBar from "./tabBar";
 import {ref} from 'vue'
 import {ElMessage} from 'element-plus';
+import {chooseRandomPic} from "./func";
 
 export default {
   components: {
@@ -219,11 +180,6 @@ export default {
       value_choose: null,
       inCart: false,
       have: false,
-      picUrl: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1017432341,1254182363&fm=224&gp=0.jpg',
-      bigPicUrl: [
-        'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
-        'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
-      ],
       showText: false
     }
   },
@@ -235,6 +191,9 @@ export default {
     this.getInCart()
   },
   methods: {
+    bookPic(i) {
+      return chooseRandomPic(i)
+    },
     isMine(id) {
       return this.$store.state.uid === id
     },
@@ -264,7 +223,8 @@ export default {
           hot: 1
         },
       }).then(r => {
-        this.Rankings = r.data
+        if (r.data.length > 8) this.Rankings = r.data.slice(0,8)
+        else this.Rankings = r.data
       })
     },
     getHave() {
@@ -352,7 +312,7 @@ export default {
           method: 'delete',
         }).then(() => {
           ElMessage.success({
-            message: '恭喜你，评论已删除!',
+            message: '评论已删除!',
             type: 'success'
           })
           this.getComments()
@@ -381,22 +341,9 @@ export default {
         url: '/go/purchased/' + this.id,
         method: 'get',
       }).then(r => {
-        this.bookContent = r.data.data.content
-      });
-      if (!this.showText) {
-        this.showText = true;
-        this.$notify.info({
-          title: '提示',
-          message: '再次点击按钮关闭窗口',
-          duration: 2500
-        });
-      } else {
-        this.showText = false
-      }
-    },
-    clickRank(id) {
-      this.$router.push({path: '/items/' + id})
-      location.reload()
+        this.bookContent = r.data.content
+        this.showText = !this.showText
+      })
     },
     submit() {
       let isCommented = false
@@ -412,11 +359,11 @@ export default {
       }
       if (document.getElementById("comment").value === ""
           || this.value_choose == null) {
-        this.$alert('内容和评分不能为空~', '提示', {
+        this.$alert('内容和评分不能为空', '提示', {
           confirmButtonText: '确定',
           center: false
         })
-        return
+        return;
       }
       this.$axios({
         url: '/go/comments/',
@@ -439,48 +386,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.a {
-  font-size: 12px;
-  color: #475669;
-}
-
-.b {
-  font-size: 14px;
-}
-
-.c {
-  text-indent: 2em
-}
-
-.item {
-  word-wrap: break-word;
-  font-size: 14px;
-}
-
-.d {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
-}
-
-.num-box {
-  width: 32px;
-  height: 32px;
-  margin: auto;
-}
-
-.name-box {
-  height: 30px;
-  margin: 0;
-  line-height: 18px;
-}
-
-.num {
-  color: #FFFFFF;
-  background: #C0C4CC;
-}
-
-.score {
-  float: right;
-}
-</style>

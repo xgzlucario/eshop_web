@@ -1,6 +1,6 @@
 <template>
   <div class="seckill-text">
-    <span class="seckill-title">书籍榜单</span>&ensp;
+    <span class="seckill-title"><i class="el-icon-collection"/> 书籍榜单</span>&ensp;
     <span class="seckill-remarks">包含本站所有书籍~</span>
   </div>
 
