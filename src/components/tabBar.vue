@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import login from "../user/Login";
+import login from "./Login";
 export default {
   components: {
     login

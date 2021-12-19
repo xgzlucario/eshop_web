@@ -29,8 +29,8 @@
     </el-col>
   </el-row>
 
-  <br>
-  <br>
+  <el-divider/>
+
   <el-row>
     <div class="seckill-text">
       <span class="seckill-title">{{ cateName }} 分类排行</span>

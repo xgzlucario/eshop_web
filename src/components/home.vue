@@ -8,7 +8,7 @@
     <el-main style="background-color: rgba(245,245,245)">
       <div style="width: 70%; margin-left: 15%">
         <cateList />
-        <br>
+        <el-divider/>
         <book-list />
       </div>
     </el-main>
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import tabBar from "../common/tabBar";
+import tabBar from "./tabBar";
 import cateList from "./cateList";
 import bookList from "./bookList";
 export default {

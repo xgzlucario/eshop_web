@@ -1,11 +1,9 @@
 <template>
-  <el-backtop target=""></el-backtop>
-  <tabBar></tabBar>
-  <br><br><br><br><br>
-  <div>
-    <el-row :gutter="100">
-      <el-col :span="4"></el-col>
-      <el-col :span="5">
+  <tabBar/>
+
+  <div style="padding: 5%">
+    <el-row>
+      <el-col :span="5" :offset="3">
         <!--书本图片详情，可以点击查看大图，大图是一个列表-->
         <div class="demo-image__preview">
           <el-image
@@ -16,9 +14,9 @@
           <p class="a">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;点击可查看大图</p>
         </div>
       </el-col>
-      <el-col :span="12">
+      <el-col :span="12" :offset="1">
         <!--这里是书本属性详情页面-->
-        <el-descriptions class="margin-top" title="商品详情" :column="2" :size="''" border>
+        <el-descriptions class="margin-top" title="商品详情" :column="2" border>
           <el-descriptions-item>
             <template #label>
               <i class="el-icon-s-management"></i>
@@ -38,7 +36,7 @@
               <i class="el-icon-shopping-cart-2"></i>
               书本售价
             </template>
-            ￥{{ info.Price }}
+            ￥{{ Number(info.Price).toFixed(2) }}
           </el-descriptions-item>
           <el-descriptions-item>
             <template #label>
@@ -185,7 +183,7 @@
 </template>
 
 <script>
-import tabBar from "@/components/common/tabBar";
+import tabBar from "./tabBar";
 import {ref} from 'vue'
 import {ElMessage} from 'element-plus';
 
@@ -428,16 +426,14 @@ export default {
           Star: this.value_choose,
           Content: document.getElementById("comment").value
         },
-      }).then(r => {
-        if (r.data.status === 200) {
-          ElMessage.success({
-            message: '恭喜你，评论成功!',
-            type: 'success'
-          })
-          this.getComments()
-          document.getElementById("comment").value = ""
-          this.value_choose = null
-        }
+      }).then(() => {
+        ElMessage.success({
+          message: '恭喜你，评论成功!',
+          type: 'success'
+        })
+        this.getComments()
+        document.getElementById("comment").value = ""
+        this.value_choose = null
       })
     }
   }
