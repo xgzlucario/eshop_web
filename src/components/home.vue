@@ -7,8 +7,18 @@
 
     <el-main style="background-color: rgba(245,245,245)">
       <div style="width: 70%; margin-left: 15%">
-        <cateList />
+        <el-row>
+          <div class="seckill-text">
+            <span class="seckill-title">这里是电子书商城！</span>
+          </div>
+        </el-row>
+
         <el-divider/>
+
+        <cateList />
+
+        <el-divider/>
+
         <book-list />
       </div>
     </el-main>

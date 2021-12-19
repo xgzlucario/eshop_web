@@ -1,7 +1,7 @@
 <template>
   <tabBar/>
 
-  <div style="width: 60%; margin-left: 20%">
+  <div style="width: 60%; margin-left: 20%; margin-top: 1%">
     <el-row>
       <div class="seckill-text">
         <span class="seckill-title">个人信息</span>
@@ -55,51 +55,25 @@
       <div class="seckill-text">
         <span class="seckill-title">购物车</span>
         &ensp;
-        <span class="seckill-remarks">你想购买的都在这里~</span>
+        <span class="seckill-remarks">你想要的都在这里~</span>
       </div>
     </el-row>
-    <el-card v-for="(item,index) in carts" :key="item">
+    <el-card shadow="never" v-for="(item,index) in carts" :key="item">
       <el-row>
         <el-col :span="4">
-          <img :src="bookPic" alt="bookPic" style="width: 180px; height: 180px;">
+          <img :src="bookPic(index)" alt="bookPic" style="width: 150px; height: 150px">
         </el-col>
         <el-col :span="18" :push="1">
-          <el-descriptions class="margin-top" title="商品详情" :column="2" :size="''" border>
-            <el-descriptions-item>
-              <template #label>
-                <i class="el-icon-s-management"></i>
-                书本名称
-              </template>
-              {{ item.name }}
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template #label>
-                <i class="el-icon-s-custom"></i>
-                书本作者
-              </template>
-              {{ item.author }}
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template #label>
-                <i class="el-icon-shopping-cart-2"></i>
-                书本售价
-              </template>
-              ￥{{ item.price }}
-            </el-descriptions-item>
-          </el-descriptions>
-          <br>
+          <span style="font-weight: bold">名称：</span>
+          <n-button @click="$router.push({path: '/items/' + item.id})" text type="info">{{ item.name }}</n-button><br>
+          <span style="font-weight: bold">作者：</span>
+          {{ item.author }}<br>
+          <span style="font-weight: bold">价格：</span>
+          {{ item.price.toFixed(2) }}<br>
+
           <!--其他按钮操作-->
-          <el-row>
-            <el-col :span="4" :push="16">
-              <el-button type="primary" plain size="small"
-                         @click="$router.push({path: '/items/' + item.id})">
-                查看详情
-              </el-button>
-            </el-col>
-            <el-col :span="4" :push="16">
-              <el-button type="danger" plain @click="removeTrolley(index)" size="small">移除购物车</el-button>
-            </el-col>
-          </el-row>
+          <br>
+          <el-button type="danger" plain @click="removeTrolley(index)" size="small">移除购物车</el-button>
         </el-col>
       </el-row>
     </el-card>
@@ -113,40 +87,22 @@
         <span class="seckill-remarks">要经常阅读哦~</span>
       </div>
     </el-row>
-    <el-card v-for="item in haves" :key="item">
+    <el-card shadow="never" v-for="(item,index) in haves" :key="item">
       <el-row>
         <el-col :span="4">
-          <img :src="bookPic" alt="bookPic" style="width: 180px; height: 180px;">
+          <img :src="bookPic(index)" alt="bookPic" style="width: 180px; height: 180px;">
         </el-col>
         <el-col :span="18" :push="1">
-          <el-descriptions class="margin-top" title="商品详情" :column="1" :size="''" border>
-            <el-descriptions-item>
-              <template #label>
-                <i class="el-icon-s-management"></i>
-                书本名称
-              </template>
-              {{ item.name }}
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template #label>
-                <i class="el-icon-s-custom"></i>
-                书本作者
-              </template>
-              {{ item.author }}
-            </el-descriptions-item>
-          </el-descriptions>
-          <br>
+          <span style="font-weight: bold">名称：</span>
+          <n-button @click="$router.push({path: '/items/' + item.id})" text type="info">{{ item.name }}</n-button><br>
+          <span style="font-weight: bold">作者：</span>
+          {{ item.author }}<br>
+
           <!--其他按钮操作-->
-          <el-row>
-            <el-col :span="4" :push="16">
-            </el-col>
-            <el-col :span="4" :push="16">
-              <el-button type="primary" plain size="small"
-                         @click="$router.push({path: '/items/' + item.id})">
-                查看详情
-              </el-button>
-            </el-col>
-          </el-row>
+          <br>
+          <el-button type="success" plain size="small" @click="$router.push({path: '/items/' + item.id})">
+            去阅读
+          </el-button>
         </el-col>
       </el-row>
     </el-card>
@@ -160,32 +116,20 @@
         <span class="seckill-remarks">你想知道的都在这里~</span>
       </div>
     </el-row>
-    <el-card shadow="hover" class="item" v-for="(item,index) in comments" :key="item" align="left">
-      <el-row>
-        <el-col :span="1">
-          <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-                     size="small"></el-avatar>
-        </el-col>
-        <el-col :span="4" style="margin-top: 6px">
-          <h4 style="margin-top: 2px">{{ item.UserID }}</h4>
-        </el-col>
-        <el-col :span="8" style="margin-top: 6px">
-          <el-rate
-              v-model="item.Star"
-              disabled
-              show-score
-              text-color="#ff9900">
-          </el-rate>
-        </el-col>
-      </el-row>
-      <p class="c">{{ item.Content }}</p>
-      <div align="right">
-        <el-button type="primary" plain size="small"
-                   @click="$router.push({path: '/items/' + item.BookID})">
+    <el-card shadow="never" class="item" v-for="(item,index) in comments" :key="item">
+      我 (uid：{{ item.UserID }})
+      <el-rate
+        v-model="item.Star"
+        disabled
+        show-score
+        text-color="#ff9900"/>
+      <span style="font-size: 16px; line-height: 36px">{{ item.Content }}</span>
+      <div>
+        <el-button type="primary" plain size="small" @click="$router.push({path: '/items/' + item.BookID})">
           查看详情
         </el-button>
-        <el-button v-if="info.username === 'vanndxh'" size="small" type="danger" plain
-                   @click="deleteComments(index)">删除
+        <el-button v-if="info.username === 'vanndxh'" size="small" type="danger" plain @click="deleteComments(index)">
+          删除
         </el-button>
       </div>
     </el-card>
@@ -249,6 +193,7 @@
 <script>
 import tabBar from "./tabBar";
 import {ElMessage} from "element-plus";
+import {chooseRandomPic} from "./func";
 
 export default {
   components: {
@@ -313,15 +258,14 @@ export default {
       },
       activeName: 'addBook',
       urlPortrait: "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2178438322,2539713157&fm=26&gp=0.jpg",
-      bookPic: 'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1017432341,1254182363&fm=224&gp=0.jpg',
       comments: [],
       carts: [],
       haves: [],
       info: {
-        Name: 'vanndxh',
+        Name: '',
         Password: '',
-        Username: 'van能的小黑',
-        Email: '1025196468@qq.com',
+        Username: '',
+        Email: '',
       },
       disable: true,
       disable2: true,
@@ -342,6 +286,9 @@ export default {
     this.getCategory()
   },
   methods: {
+    bookPic(i) {
+      return chooseRandomPic(i)
+    },
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
@@ -396,17 +343,14 @@ export default {
     },
     getComments() {
       this.comments = []
-      for (let page = 1; page < 10; page++) {
+      for (let page = 1; page < 5; page++) {
         this.$axios({
           url: '/go/comments/',
           method: 'get',
           params: {page: page}
         }).then(r => {
-          if (r.data.length === 0) {
-            return
-          }
           r.data.forEach(i => {
-            if (i.UserID === this.$store.state.uid) {
+            if (i.UserID == this.$store.state.uid) {
               i.Star = i.Star / 2
               this.comments.push(i)
             }

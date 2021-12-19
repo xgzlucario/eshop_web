@@ -38,15 +38,18 @@
   </el-row>
 
   <el-row>
+    <!--每四个换行-->
     <el-col v-for="(i, index) in rank.slice(0, 8)" :key="i.name" :span="5" :offset="index%4===0 ? 0 : 1">
       <div style="padding: 3%">
         <div style="font-weight: 500; font-size: 16px">
           <n-button text type="info"
             @click="this.$router.push({path: '/items/' + i.ID})">
-            {{ i.Name.length > 30 ? i.Name.slice(0,20) + '...' : i.Name }}</n-button>
+            <span style="font-size: 15px">{{ i.Name.length > 30 ? i.Name.slice(0,20) + '...' : i.Name }}</span>
+            </n-button>
         </div>
         <div style="color: gray; font-size: 14px">{{ i.Author }}</div>
-        <div style="font-size: 12px; line-height: 24px">购买: {{ i.PayNumber }}</div>
+        <img :src="bookPic(index)" style="width: 100px; height: 100px">
+        <div style="font-size: 14px; line-height: 24px">售出: {{ i.PayNumber }}</div>
         <n-rate size="small" readonly :default-value="i.Star / 2" />
       </div>
     </el-col>
@@ -54,6 +57,7 @@
 </template>
 
 <script>
+import {chooseRandomPic} from "./func";
 export default {
   data() {
     return {
@@ -73,6 +77,9 @@ export default {
     }
   },
   methods: {
+    bookPic(i) {
+      return chooseRandomPic(i)
+    },
     getCategory() {
       this.$axios({
         url: '/go/categories/',
