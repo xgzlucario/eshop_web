@@ -4,7 +4,6 @@ export default createStore({
   state: {
     uid: null,
     pass: '',
-    axios: require('axios'),
   },
   mutations: {
   },

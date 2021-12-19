@@ -41,13 +41,13 @@
     <el-col v-for="(i, index) in rank.slice(0, 8)" :key="i.name" :span="5" :offset="index%4===0 ? 0 : 1">
       <div style="padding: 3%">
         <div style="font-weight: 500; font-size: 16px">
-          <n-button quaternary text type="info"
+          <n-button text type="info"
             @click="this.$router.push({path: '/items/' + i.ID})">
             {{ i.Name.length > 30 ? i.Name.slice(0,20) + '...' : i.Name }}</n-button>
         </div>
         <div style="color: gray; font-size: 14px">{{ i.Author }}</div>
-        <div>购买: {{ i.PayNumber }}</div>
-        <n-rate readonly :default-value="i.Star / 2" />
+        <div style="font-size: 12px; line-height: 24px">购买: {{ i.PayNumber }}</div>
+        <n-rate size="small" readonly :default-value="i.Star / 2" />
       </div>
     </el-col>
   </el-row>
@@ -74,13 +74,13 @@ export default {
   },
   methods: {
     getCategory() {
-      this.$store.state.axios({
+      this.$axios({
         url: '/go/categories/',
         method: 'get'
-      }).then(r => {
+      }).then(res => {
         // 分类集合
         let cateSet = {}
-        r.data.data.forEach(i => {
+        res.data.forEach(i => {
           cateSet[i.name] = i.id
         })
 
@@ -89,7 +89,7 @@ export default {
       })
     },
     getRankBooks() {
-      this.$store.state.axios({
+      this.$axios({
         url: '/go/book/',
         method: 'get',
         params: {
@@ -97,8 +97,8 @@ export default {
           hot: 1,
           page: 1
         },
-      }).then(r => {
-        this.rank = r.data.data
+      }).then(res => {
+        this.rank = res.data
       })
     },
     // 更新数据

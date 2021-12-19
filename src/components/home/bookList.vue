@@ -16,7 +16,8 @@
       @update-page="pageChange"
       style="float: right; margin-top: 5px"
       v-model:page="page"
-      :page-count="counts / 10"
+      :item-count="counts"
+      :page-size="10"
   />
 </template>
 
@@ -35,7 +36,6 @@ export default {
             return h(
                 NButton,
                 {
-                  quaternary: true,
                   text: true,
                   type: 'info',
                   onClick: () => {
@@ -68,7 +68,7 @@ export default {
         {title: '已售', key: 'sell'},
       ],
       counts: 0,
-      page: 0,
+      page: 1,
       hot: 1,
       data: [],
       cateID: '',
@@ -90,13 +90,13 @@ export default {
       this.getBooks()
     },
     getCategory() {
-      this.$store.state.axios({
+      this.$axios({
         url: '/go/categories/',
         method: 'get'
       }).then(r => {
         // 分类集合
         let cateSet = {}
-        r.data.data.forEach(i => {
+        r.data.forEach(i => {
           cateSet[i.name] = i.id
         })
 
@@ -105,7 +105,7 @@ export default {
       })
     },
     getBooks(page) {
-      this.$store.state.axios({
+      this.$axios({
         url: '/go/book/',
         method: 'get',
         params: {
@@ -113,9 +113,9 @@ export default {
           hot: this.hot,
           page: page ? page : 1
         },
-      }).then(r => {
-        this.counts = r.data['all books count']
-        this.saveData(r.data.data)
+      }).then(res => {
+        this.counts = res['all books count']
+        this.saveData(res.data)
       })
     },
     // 更新数据

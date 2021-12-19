@@ -1,31 +1,50 @@
 <template>
-  <el-menu :default-active="activeIndex" mode="horizontal">
-
-    <el-menu-item index="1" @click="this.$router.push({path:'/home'})">
+  <!--菜单-->
+  <el-menu :default-active="active" mode="horizontal">
+    <el-menu-item style="margin-left: 15%" index="1" @click="toHome">
       主页
     </el-menu-item>
 
-    <el-menu-item style="float: right" index="2" @click="onClickUser">
-      用户管理
-      <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+    <el-menu-item v-show="!isLogin" style="float: right; margin-right: 15%" index="2" @click="showLogin=true">
+      你还未登录，<n-button quaternary text type="info">去登录</n-button>
+    </el-menu-item>
+
+    <el-menu-item v-show="isLogin" style="float: right; margin-right: 15%" index="3" @click="this.$router.push({path:'/user'})">
+      我的信息
     </el-menu-item>
   </el-menu>
+
+  <!--登录框-->
+  <el-dialog v-model="showLogin" title="请登录" width="30%">
+    <login/>
+  </el-dialog>
 </template>
 
 <script>
+import login from "../user/Login";
 export default {
+  components: {
+    login
+  },
   data() {
     return {
       activeIndex: '1',
+      showLogin: false,
     };
   },
+  computed: {
+    isLogin() {
+      return this.$store.state.uid !== null
+    },
+    active() {
+      if (this.$route.path === '/home') return 1
+      else if (this.$route.path === '/user') return 3
+      return ''
+    }
+  },
   methods: {
-    onClickUser(){
-      // 未登录
-      if (this.$store.state.uid == null)
-        this.$router.push({path:'/login'})
-      else
-        this.$router.push({path:'/user'})
+    toHome() {
+      this.$router.push({path:'/home'})
     }
   },
 }

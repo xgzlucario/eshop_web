@@ -29,7 +29,6 @@ export default {
 <style>
 .carousel-img {
   width: 100%;
-  border-radius: 10px;
   height: 350px;
   object-fit: cover;
 }

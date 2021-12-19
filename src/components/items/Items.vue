@@ -56,7 +56,7 @@
                 v-model="getStar"
                 disabled
                 show-score
-                text-color="#ff9900" />
+                text-color="#ff9900"/>
           </el-descriptions-item>
           <el-descriptions-item>
             <template #label>
@@ -129,7 +129,8 @@
           <p class="c">{{ comment.Content }}</p>
           <div align="right">
             <el-button size="mini" type="danger" plain @click="deleteComments(index)"
-                       v-if="isAdmin || isMine(comment.UserID)">删除</el-button>
+                       v-if="isAdmin || isMine(comment.UserID)">删除
+            </el-button>
           </div>
         </el-card>
 
@@ -185,14 +186,12 @@
 
 <script>
 import tabBar from "@/components/common/tabBar";
-import {defineComponent, ref} from 'vue'
-import { ElMessage } from 'element-plus';
+import {ref} from 'vue'
+import {ElMessage} from 'element-plus';
 
 export default {
-  name: "Items",
   components: {
-    // eslint-disable-next-line vue/no-unused-components
-    tabBar, defineComponent
+    tabBar
   },
   setup() {
     // 从url截取id
@@ -205,12 +204,12 @@ export default {
       textarea: ref('')
     }
   },
-  computed:{
-    getStar(){
+  computed: {
+    getStar() {
       return this.info.Star / 2
     },
-    isAdmin(){
-      return this.$store.state.uid==1
+    isAdmin() {
+      return this.$store.state.uid === 1
     },
   },
   data() {
@@ -238,28 +237,28 @@ export default {
     this.getInCart()
   },
   methods: {
-    isMine(id){
-      return this.$store.state.uid==id
+    isMine(id) {
+      return this.$store.state.uid === id
     },
     getInfo() {
-      this.$store.state.axios({
+      this.$axios({
         url: '/go/book/' + this.id,
         method: 'get',
       }).then(r => {
-        this.info = r.data.data
+        this.info = r.data
       })
     },
     getComments() {
-      this.$store.state.axios({
+      this.$axios({
         url: '/go/comments/',
         method: 'get',
         params: {book: this.id},
       }).then(r => {
-        this.comments = r.data.data
+        this.comments = r.data
       })
     },
     getRanking() {
-      this.$store.state.axios({
+      this.$axios({
         url: '/go/book/',
         method: 'get',
         params: {
@@ -267,27 +266,24 @@ export default {
           hot: 1
         },
       }).then(r => {
-        this.Rankings = r.data.data
+        this.Rankings = r.data
       })
     },
     getHave() {
-      this.$store.state.axios({
+      this.$axios({
         url: '/go/purchased/' + this.id,
         method: 'get',
-      }).then(r => {
-        if(r.data.status === 200)
-          this.have = true
-      }).catch(() => {
-        this.have = false
+      }).then(() => {
+        this.have = true
       })
     },
     getInCart() {
-      this.$store.state.axios({
+      this.$axios({
         url: '/go/carts/',
         method: 'get',
       }).then(r => {
-        r.data.data.forEach(i => {
-          if(i.id === this.id) {
+        r.data.forEach(i => {
+          if (i.id === this.id) {
             this.inCart = true
           }
         })
@@ -299,41 +295,31 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$store.state.axios({
+        this.$axios({
           url: '/go/book/' + this.id,
           method: 'delete',
-        }).then(r => {
-          if (r.data.status === 200){
-            ElMessage.success({
-              message: '恭喜你，已经成功删除!',
-              type: 'success'
-            });
-          }
-          location.href = "/"
+        }).then(() => {
+          ElMessage.success({
+            message: '恭喜你，已经成功删除!',
+            type: 'success'
+          })
         })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
+      })
     },
     addTrolley() {
-      this.$store.state.axios({
+      this.$axios({
         url: '/go/carts/',
         method: 'post',
         data: {
           BookID: this.id
         },
-      }).then(r => {
-        if (r.data.status === 200) {
-          ElMessage.success({
-            message: '恭喜你，已经成功添加到购物车!',
-            type: 'success'
-          })
-          this.inCart = true;
-        }
-      }).catch(()=>{
+      }).then(() => {
+        ElMessage.success({
+          message: '恭喜你，已经成功添加到购物车!',
+          type: 'success'
+        })
+        this.inCart = true
+      }).catch(() => {
         this.$alert('你还没有登录！', '提示', {
           confirmButtonText: '确定',
           center: false
@@ -341,17 +327,15 @@ export default {
       })
     },
     removeTrolley() {
-      this.$store.state.axios({
+      this.$axios({
         url: '/go/carts/' + this.id,
         method: 'delete',
-      }).then(r => {
-        if (r.data.status === 200) {
-          ElMessage.success({
-            message: '恭喜你，已经成功从购物车删除!',
-            type: 'success'
-          })
-          this.inCart = false
-        }
+      }).then(() => {
+        ElMessage.success({
+          message: '恭喜你，已经成功从购物车删除!',
+          type: 'success'
+        })
+        this.inCart = false
       }).catch(() => {
         this.$alert('你还没有登录！', '提示', {
           confirmButtonText: '确定',
@@ -365,10 +349,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$store.state.axios({
+        this.$axios({
           url: '/go/comments/' + this.comments[index].ID,
           method: 'delete',
-          // eslint-disable-next-line no-unused-vars
         }).then(() => {
           ElMessage.success({
             message: '恭喜你，评论已删除!',
@@ -379,18 +362,16 @@ export default {
       })
     },
     buy() {
-      this.$store.state.axios({
+      this.$axios({
         url: '/go/purchased/' + this.id,
         method: 'post',
-      }).then(r => {
-        if (r.data.status === 200){
-          ElMessage.success({
-            message: '恭喜你，已经成功购买!',
-            type: 'success'
-          });
-          this.have = true
-        }
-      }).catch(()=>{
+      }).then(() => {
+        ElMessage.success({
+          message: '恭喜你，已经成功购买!',
+          type: 'success'
+        })
+        this.have = true
+      }).catch(() => {
         this.$alert('你还没有登录！', '提示', {
           confirmButtonText: '确定',
           center: false
@@ -398,11 +379,11 @@ export default {
       })
     },
     read() {
-      this.$store.state.axios({
+      this.$axios({
         url: '/go/purchased/' + this.id,
         method: 'get',
       }).then(r => {
-        this.bookContent = r.data.data.content;
+        this.bookContent = r.data.data.content
       });
       if (!this.showText) {
         this.showText = true;
@@ -415,8 +396,8 @@ export default {
         this.showText = false
       }
     },
-    clickRank(id){
-      this.$router.push({path: '/items/'+id})
+    clickRank(id) {
+      this.$router.push({path: '/items/' + id})
       location.reload()
     },
     submit() {
@@ -432,14 +413,14 @@ export default {
         return
       }
       if (document.getElementById("comment").value === ""
-          || this.value_choose == null){
+          || this.value_choose == null) {
         this.$alert('内容和评分不能为空~', '提示', {
           confirmButtonText: '确定',
           center: false
         })
         return
       }
-      this.$store.state.axios({
+      this.$axios({
         url: '/go/comments/',
         method: 'post',
         data: {
@@ -454,7 +435,7 @@ export default {
             type: 'success'
           })
           this.getComments()
-          document.getElementById("comment").value = "";
+          document.getElementById("comment").value = ""
           this.value_choose = null
         }
       })

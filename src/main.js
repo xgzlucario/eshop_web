@@ -7,4 +7,9 @@ import 'element-plus/lib/theme-chalk/index.css';
 
 import NaiveUi from 'naive-ui'
 
-createApp(App).use(store).use(ElementPlus).use(router).use(NaiveUi).mount('#app')
+const app = createApp(App)
+
+import axios from './components/axios'
+app.config.globalProperties.$axios = axios
+
+app.use(store).use(ElementPlus).use(router).use(NaiveUi).mount('#app')

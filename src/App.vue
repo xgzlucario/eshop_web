@@ -3,22 +3,19 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie';
 export default {
-  // 设置cookie
+  // 加载缓存数据
   mounted() {
-    let uid = Cookies.get('uid')
+    // 是否登录
+    let uid = localStorage.getItem('uid')
     if (uid) {
       this.$store.state.uid = uid
     }
-    let token = Cookies.get('token')
+
+    let token = localStorage.getItem('token')
     if (token) {
-      this.$store.state.token = token
-      this.$store.state.axios.defaults.headers['Authorization'] = 'Bearer ' + token
-    }
-    let pass = Cookies.get('pass')
-    if (pass) {
-      this.$store.state.pass = pass
+      this.$store.state.is_login = true
+      this.$axios.defaults.headers['Authorization'] = 'Bearer ' + token
     }
   }
 }

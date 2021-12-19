@@ -99,7 +99,8 @@
                   <el-col :span="4" :push="16">
                     <el-button type="primary" plain size="small"
                                @click="$router.push({path: '/items/' + item.id})">
-                      查看详情</el-button>
+                      查看详情
+                    </el-button>
                   </el-col>
                   <el-col :span="4" :push="16">
                     <el-button type="danger" plain @click="removeTrolley(index)" size="small">移除购物车</el-button>
@@ -143,7 +144,8 @@
                   <el-col :span="4" :push="16">
                     <el-button type="primary" plain size="small"
                                @click="$router.push({path: '/items/' + item.id})">
-                      查看详情</el-button>
+                      查看详情
+                    </el-button>
                   </el-col>
                 </el-row>
               </el-col>
@@ -177,7 +179,8 @@
             <div align="right">
               <el-button type="primary" plain size="small"
                          @click="$router.push({path: '/items/' + item.BookID})">
-                查看详情</el-button>
+                查看详情
+              </el-button>
               <el-button v-if="info.username === 'vanndxh'" size="small" type="danger" plain
                          @click="deleteComments(index)">删除
               </el-button>
@@ -210,7 +213,7 @@
                 </el-form-item>
                 <el-form-item label="分类" prop="bookCategory3">
                   <el-select v-model="ruleForm3.bookCategory3" placeholder="选择分类" size="small">
-                    <el-option @click="cateID=i.id" v-for="i in options" :key="i.id" :label="i.name" :value="i.id" />
+                    <el-option @click="cateID=i.id" v-for="i in options" :key="i.id" :label="i.name" :value="i.id"/>
                   </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -226,7 +229,8 @@
                   <el-input v-model="ruleForm4.cateName4"></el-input>
                 </el-form-item>
               </el-form>
-              <br><el-button type="primary" @click="submitForm4('ruleForm4')">添加</el-button>
+              <br>
+              <el-button type="primary" @click="submitForm4('ruleForm4')">添加</el-button>
             </el-tab-pane>
 
           </el-tabs>
@@ -240,50 +244,48 @@
 <script>
 import tabBar from "@/components/common/tabBar";
 import {ElMessage} from "element-plus";
-import Cookies from 'js-cookie'
 
 export default {
-  name: "Mine",
   components: {
     tabBar
   },
   data() {
-    const bookName3 = (rule, value, callback) => {
+    let bookName3 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入书籍名称'));
       } else {
         callback();
       }
     };
-    var bookPrice3 = (rule, value, callback) => {
+    let bookPrice3 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入书籍价格'));
       } else {
         callback();
       }
     };
-    var bookContent3 = (rule, value, callback) => {
+    let bookContent3 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入书籍内容'));
       } else {
         callback();
       }
     };
-    var bookAuthor3 = (rule, value, callback) => {
+    let bookAuthor3 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入书籍作者'));
       } else {
         callback();
       }
     };
-    var bookCategory3 = (rule, value, callback) => {
+    let bookCategory3 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入书籍分类'));
       } else {
         callback();
       }
     };
-    var cateName4 = (rule, value, callback) => {
+    let cateName4 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入分类名称'));
       } else {
@@ -340,9 +342,9 @@ export default {
       changePasswordButton: '修改密码',
     }
   },
-  computed:{
-    isAdmin(){
-      return this.$store.state.uid==1
+  computed: {
+    isAdmin() {
+      return this.$store.state.uid === 1
     },
   },
   mounted() {
@@ -356,32 +358,32 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-    getHaves(){
-      this.$store.state.axios({
+    getHaves() {
+      this.$axios({
         url: '/go/purchased/',
         method: 'get'
       }).then(r => {
-        this.haves = r.data.data
+        this.haves = r.data
       })
     },
-    getCategory(){
-      this.$store.state.axios({
+    getCategory() {
+      this.$axios({
         url: '/go/categories/',
         method: 'get'
       }).then(r => {
-        r.data.data.forEach(i => {
+        r.data.forEach(i => {
           this.options.push({name: i.name, id: i.id})
         })
       })
     },
-    getInfo(){
-      this.$store.state.axios({
+    getInfo() {
+      this.$axios({
         url: '/go/auth/',
         method: 'get',
       }).then(r => {
-        this.info = r.data.data
+        this.info = r.data
         this.info.Password = this.$store.state.pass
-        this.info.Email = r.data.data.Mail
+        this.info.Email = r.data.Mail
       })
     },
     logout() {
@@ -390,34 +392,34 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        Cookies.set('uid', undefined)
-        Cookies.set('token', undefined)
+        localStorage.removeItem('uid')
+        localStorage.removeItem('token')
         this.$store.state.uid = null
-        this.$store.state.axios.defaults.headers['Authorization'] = ''
+        this.$axios.defaults.headers['Authorization'] = ''
         this.$router.push({path: '/home'})
       })
     },
     getCarts() {
-      this.$store.state.axios({
+      this.$axios({
         url: '/go/carts/',
         method: 'get',
       }).then(r => {
-        this.carts = r.data.data
+        this.carts = r.data
       })
     },
     getComments() {
       this.comments = []
-      for (let page=1; page<10 ;page++) {
-        this.$store.state.axios({
+      for (let page = 1; page < 10; page++) {
+        this.$axios({
           url: '/go/comments/',
           method: 'get',
           params: {page: page}
         }).then(r => {
-          if (r.data.data.length === 0) {
+          if (r.data.length === 0) {
             return
           }
-          r.data.data.forEach(i => {
-            if (i.UserID == this.$store.state.uid) {
+          r.data.forEach(i => {
+            if (i.UserID === this.$store.state.uid) {
               i.Star = i.Star / 2
               this.comments.push(i)
             }
@@ -426,11 +428,10 @@ export default {
       }
     },
     deleteComments(index) {
-      this.$store.state.axios({
+      this.$axios({
         url: '/go/comments/' + this.comments[index].ID,
         method: 'delete',
-        // eslint-disable-next-line no-unused-vars
-      }).then(r => {
+      }).then(() => {
         ElMessage.success({
           message: '恭喜你，评论已删除!',
           type: 'success'
@@ -445,12 +446,11 @@ export default {
       } else {
         this.disable2 = true;
         this.changePasswordButton = "修改密码";
-        this.$store.state.axios({
+        this.$axios({
           url: '/go/auth/' + this.$store.state.uid,
           method: 'put',
           data: this.info
-        }).then(r => {
-          console.log(r.data)
+        }).then(() => {
           this.$notify({
             title: '提示',
             message: '修改成功！',
@@ -468,12 +468,11 @@ export default {
         this.disable = true;
         this.changeNameButton = "修改名称";
 
-        this.$store.state.axios({
+        this.$axios({
           url: '/go/auth/' + this.$store.state.uid,
           method: 'put',
           data: this.info
-        }).then(r => {
-          console.log(r.data)
+        }).then(() => {
           this.$notify({
             title: '提示',
             message: '修改成功！',
@@ -484,23 +483,21 @@ export default {
       }
     },
     removeTrolley(index) {
-      this.$store.state.axios({
+      this.$axios({
         url: '/go/carts/' + this.carts[index].id,
         method: 'delete',
-      }).then(r => {
-        if (r.data.status === 200) {
-          ElMessage.success({
-            message: '恭喜你，已经成功从购物车删除!',
-            type: 'success'
-          })
-          this.getCarts()
-        }
+      }).then(() => {
+        ElMessage.success({
+          message: '恭喜你，已经成功从购物车删除!',
+          type: 'success'
+        })
+        this.getCarts()
       })
     },
     submitForm4() {
       this.$refs['ruleForm4'].validate((valid) => {
         if (valid) {
-          this.$store.state.axios({
+          this.axios({
             url: '/go/categories/',
             method: 'post',
             data: {
@@ -522,7 +519,7 @@ export default {
     submitForm3() {
       this.$refs['ruleForm3'].validate((valid) => {
         if (valid) {
-          this.$store.state.axios({
+          this.$axios({
             url: '/go/book/',
             method: 'post',
             data: {
@@ -548,7 +545,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>
